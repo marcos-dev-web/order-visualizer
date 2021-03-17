@@ -2,23 +2,13 @@ import "./style.css";
 
 import React, { Component } from "react";
 
-
-class Trat {
-  
-}
-
-export default class Application extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      valueInput: "",
-      blocks: [],
-      lengthArray: 10,
-      widthBlock: 25,
+class Treatment {
+  constructor(setState) {
+    this.setState = (value) => {
+      setState(value);
     };
   }
-
-  tratInput = (event) => {
+  input = (event) => {
     const value = event.target.value.toLowerCase();
     let string = value;
 
@@ -64,33 +54,53 @@ export default class Application extends Component {
     const find = acceptKeys.find((key) => keyPressed === key);
 
     if (find != null || (find === null && event.CtrlKey)) {
-      this.tratInput(event);
+      this.input(event);
     } else {
       event.preventDefault();
     }
   };
+}
+
+export default class Application extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      valueInput: "",
+      blocks: [],
+      lengthArray: 10,
+      widthBlock: 25,
+      hoverHeight: 0,
+    };
+
+    this.trat = new Treatment((state) => {
+      this.setState(state);
+    });
+  }
 
   generateArray = () => {
+    let arr = [];
     let length = this.state.lengthArray;
-    if (this.state.valueInput.length > 0) {
-      let n = Number.parseInt(this.state.valueInput);
+    const lengthInput = this.state.valueInput.length;
+    const inputValue = this.state.valueInput;
+
+    if (lengthInput > 0) {
+      const n = Number.parseInt(inputValue);
+      let wb = 0;
+
       if (n >= 25 && n < 40) {
-        this.setState({
-          widthBlock: 15,
-        });
+        wb = 15;
       } else if (n >= 40 && n < 70) {
-        this.setState({
-          widthBlock: 10,
-        });
+        wb = 10;
       } else if (n >= 70) {
-        this.setState({
-          widthBlock: 2,
-        });
+        wb = 4;
       } else {
-        this.setState({
-          widthBlock: 25,
-        });
+        wb = 10;
       }
+
+      this.setState({
+        widthBlock: wb,
+      });
+
       if (n >= 2) {
         length = n;
       } else {
@@ -98,12 +108,10 @@ export default class Application extends Component {
         return;
       }
     }
-    let arr = [];
+
     for (let i = 0; i < length; i++) {
-      console.log(this.state.widthBlock)
       arr.push({
         h: randomMinMax(100, 500),
-        bg: "rgba(0, 17, 255, 0.404)",
       });
     }
 
@@ -147,13 +155,13 @@ export default class Application extends Component {
           maxLength="8"
           minLength="1"
           required
-          onKeyDown={this.verifyKeyPressed}
-          onKeyUp={this.verifyKeyPressed}
-          onDrop={this.verifyKeyPressed}
+          onKeyDown={this.trat.input}
+          onKeyUp={this.trat.input}
+          onDrop={this.trat.input}
         />
         <p>
           Length Array: (
-          {this.state.valueInput != ""
+          {this.state.valueInput !== ""
             ? this.state.valueInput
             : this.state.lengthArray}
           )
@@ -167,14 +175,30 @@ export default class Application extends Component {
           </button>
         </div>
         <section className="container">
+          <p
+            style={{
+              opacity: this.state.hoverHeight !== 0 ? 1 : 0,
+            }}
+          >
+            {this.state.hoverHeight}
+          </p>
           {this.state.blocks.map((block, index) => {
             const style = {
               width: `${this.state.widthBlock}px`,
               height: `${block.h}px`,
-              backgroundColor: block.bg,
             };
             return (
-              <div key={index} className="block" style={style}>
+              <div
+                key={index}
+                className="block"
+                style={style}
+                onMouseEnter={() => {
+                  this.setState({ hoverHeight: `${block.h}px` });
+                }}
+                onMouseOut={() => {
+                  this.setState({ hoverHeight: 0 });
+                }}
+              >
                 {this.state.widthBlock >= 25 ? <p>{block.h}</p> : null}
               </div>
             );

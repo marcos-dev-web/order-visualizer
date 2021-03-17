@@ -20,6 +20,14 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  position: relative;
+}
+
+.container > p {
+  position: absolute;
+  top: -25px;
+  color: #646474;
+  transition: 500ms;
 }
 
 .block {
@@ -29,8 +37,9 @@
   background: rgba(0, 17, 255, 0.404);
 }
 
-.block p {
+.block > p {
   font-size: 0.8rem;
+  pointer-events: none;
 }
 
 .buttons {
