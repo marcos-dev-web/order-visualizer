@@ -1,7 +1,11 @@
-
-import './style.css';
+import "./style.css";
 
 import React, { Component } from "react";
+
+
+class Trat {
+  
+}
 
 export default class Application extends Component {
   constructor(props) {
@@ -10,6 +14,7 @@ export default class Application extends Component {
       valueInput: "",
       blocks: [],
       lengthArray: 10,
+      widthBlock: 25,
     };
   }
 
@@ -69,49 +74,64 @@ export default class Application extends Component {
     let length = this.state.lengthArray;
     if (this.state.valueInput.length > 0) {
       let n = Number.parseInt(this.state.valueInput);
+      if (n >= 25 && n < 40) {
+        this.setState({
+          widthBlock: 15,
+        });
+      } else if (n >= 40 && n < 70) {
+        this.setState({
+          widthBlock: 10,
+        });
+      } else if (n >= 70) {
+        this.setState({
+          widthBlock: 2,
+        });
+      } else {
+        this.setState({
+          widthBlock: 25,
+        });
+      }
       if (n >= 2) {
         length = n;
-      } else if (n > 50) {
-        alert('the number need less than or equal to 20');
-        return;
       } else {
-        alert('the number need higher than 2 or equal');
+        alert("the number need higher than 2 or equal");
         return;
       }
     }
     let arr = [];
     for (let i = 0; i < length; i++) {
+      console.log(this.state.widthBlock)
       arr.push({
-        w: 25,
-        h: randomMinMax(100, 500)
+        h: randomMinMax(100, 500),
+        bg: "rgba(0, 17, 255, 0.404)",
       });
     }
 
     this.setState({
       blocks: arr,
-    })
-  }
+    });
+  };
 
   orderArray = () => {
     let arr = this.state.blocks;
     let length = arr.length;
-    let i = 0;
-    while (i < (length - 1) * 2) {
-      for (let i = 0; i < length-1; i++) {
-        let hOld = arr[i].h
-        let hNow = arr[i+1].h
+    let j = 0;
 
+    while (j < (length - 1) * 2) {
+      for (let i = 0; i < length - 1; i++) {
+        let hOld = arr[i].h;
+        let hNow = arr[i + 1].h;
         if (higherNumber(hOld, hNow)) {
           arr[i].h = hNow;
-          arr[i+1].h = hOld;
+          arr[i + 1].h = hOld;
           this.setState({
             blocks: arr,
-          })
+          });
         }
       }
-      i++;
+      j++;
     }
-  }
+  };
 
   componentDidMount() {
     this.generateArray();
@@ -121,6 +141,7 @@ export default class Application extends Component {
     return (
       <main className="main">
         <input
+          className="input_length"
           type="text"
           placeholder="length array"
           maxLength="8"
@@ -130,21 +151,34 @@ export default class Application extends Component {
           onKeyUp={this.verifyKeyPressed}
           onDrop={this.verifyKeyPressed}
         />
-        <p>{this.state.valueInput}</p>
+        <p>
+          Length Array: (
+          {this.state.valueInput != ""
+            ? this.state.valueInput
+            : this.state.lengthArray}
+          )
+        </p>
         <div className="buttons">
-          <button className="button" onClick={this.generateArray}>Regenerate</button>
-          <button className="button" onClick={this.orderArray}>Order</button>
+          <button className="button" onClick={this.generateArray}>
+            Regenerate
+          </button>
+          <button className="button" onClick={this.orderArray}>
+            Order
+          </button>
         </div>
         <section className="container">
-          {
-            this.state.blocks.map((block, index) => {
-              const style = {
-                width: `${block.w}px`,
-                height: `${block.h}px`,
-              };
-              return <div key={index} className="block" style={style}><p>{block.h}</p></div>
-            })
-          }
+          {this.state.blocks.map((block, index) => {
+            const style = {
+              width: `${this.state.widthBlock}px`,
+              height: `${block.h}px`,
+              backgroundColor: block.bg,
+            };
+            return (
+              <div key={index} className="block" style={style}>
+                {this.state.widthBlock >= 25 ? <p>{block.h}</p> : null}
+              </div>
+            );
+          })}
         </section>
       </main>
     );
@@ -152,7 +186,7 @@ export default class Application extends Component {
 }
 
 function randomMinMax(min, max) {
-  return Math.floor(min + (Math.random() * (max - min)) - 1);
+  return Math.floor(min + Math.random() * (max - min) - 1);
 }
 
 function higherNumber(a, b) {
