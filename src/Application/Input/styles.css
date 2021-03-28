@@ -1,0 +1,7 @@
+.input_length {
+  outline: none;
+  border: 2px solid rgb(187, 187, 187);
+  color: rgb(72, 73, 92);
+  padding: 0 5px;
+  font-size: 1.3rem;
+}
