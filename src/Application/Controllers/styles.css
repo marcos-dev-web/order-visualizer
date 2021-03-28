@@ -1,0 +1,21 @@
+.buttons {
+  min-width: 400px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.button {
+  border: none;
+  outline: none;
+  background: rgb(20, 219, 20);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 5px;
+  min-width: 150px;
+}
+
+.button:active {
+  background:rgba(0, 17, 255, 0.404);
+}
